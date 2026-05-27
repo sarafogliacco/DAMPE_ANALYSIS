@@ -7,7 +7,7 @@
     gStyle->SetPadTopMargin(0.03);
     gStyle->SetPadBottomMargin(0.09);
 
-    TFile aa("out_root/scatterplot_DATA_120months_PSD_BGO.root");
+    TFile aa("/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/SULFUR_ANALYSIS/out_root/scatterplot_DATA_120months_PSD_BGO.root");
 
     TH2F *hDATA = (TH2F*)aa.Get("h2psdbgo"); 
 
@@ -70,7 +70,7 @@
     TF1 *sup_s  = new TF1("sup_s", MPV_DATA_s+"+"+cut_up_s+"*"+sigma_DATA_s,100.,60000); sup_s->SetLineColor(1); sup_s->SetLineWidth(4); sup_s->SetLineStyle(9); sup_s->Draw("same");
 
     TLatex *lat_S_low = new TLatex(120.,15.6,"S MPV - 2#sigma"); lat_S_low->SetTextSize(0.027); lat_S_low->Draw();
-    TLatex *lat_S     = new TLatex(220.,16.25,"S "); lat_S->SetTextSize(0.027); lat_S->Draw();
+    TLatex *lat_S     = new TLatex(220.,16.25,"S MPV"); lat_S->SetTextSize(0.027); lat_S->Draw();
     TLatex *lat_S_up  = new TLatex(120.,16.85,"S MPV + 3#sigma"); lat_S_up->SetTextSize(0.027);  lat_S_up->Draw();
 
  
@@ -79,7 +79,14 @@
     TString MPV_DATA_ar = "(18.0376+(0.046027*log10(x)))";
     TString sigma_DATA_ar = "(0.291262+(0.00339476*log10(x)))";
 
-    TString cut_dw_ar = "1.0"; TString cut_up_ar = "1.0";
+
+    */
+    // ARGON 27/05/2026
+
+    TString MPV_DATA_ar = "(16.762+(1.14769*log10(x))+(-0.264239*pow(log10(x),2))+(0.00423957*pow(log10(x),4)))";
+    TString sigma_DATA_ar = "(0.242923+(0.0369508*log10(x)))";
+
+    TString cut_dw_ar = "1.5"; TString cut_up_ar = "2.0";
 
     TF1 *mpv_ar =  new TF1("mpv_ar",MPV_DATA_ar,100.,60000);
     mpv_ar->SetLineColor(1); mpv_ar->SetLineWidth(4); mpv_ar->Draw("same");
@@ -88,18 +95,18 @@
     TF1 *sup_ar  = new TF1("sup_ar", MPV_DATA_ar+"+"+cut_up_ar+"*"+sigma_DATA_ar,100.,60000);
     sup_ar->SetLineColor(1); sup_ar->SetLineWidth(4); sup_ar->SetLineStyle(9); sup_ar->Draw("same");
 
-    TLatex *lat_Ar_low = new TLatex(120.,17.6,"Ar MPV - 1#sigma"); lat_Ar_low->SetTextSize(0.027); lat_Ar_low->Draw();*/
-    TLatex *lat_Ar     = new TLatex(220.,18.2,"Ar"); lat_Ar->SetTextSize(0.027); lat_Ar->Draw();
-/*    TLatex *lat_Ar_up  = new TLatex(120.,18.7,"Ar MPV + 1#sigma"); lat_Ar_up->SetTextSize(0.027);  lat_Ar_up->Draw();
-    */
+    TLatex *lat_Ar_low = new TLatex(120.,17.8,"Ar MPV - 1.5#sigma"); lat_Ar_low->SetTextSize(0.027); lat_Ar_low->Draw();
+    TLatex *lat_Ar     = new TLatex(220.,18.2,"Ar MPV"); lat_Ar->SetTextSize(0.027); lat_Ar->Draw();
+    TLatex *lat_Ar_up  = new TLatex(120.,18.5,"Ar MPV + 2#sigma"); lat_Ar_up->SetTextSize(0.027);  lat_Ar_up->Draw();
 
 
+    /*
     // CALCIUM *** multigauss
     TString MPV_DATA_ca = "(20.0349+(0.0451529*log10(x)))";
     TString sigma_DATA_ca = "(0.400169+(-0.00286795*log10(x)))";
 
     TString cut_dw_ca = "1.0"; TString cut_up_ca = "2.0";
-
+    */
     //TF1 *mpv_ca =  new TF1("mpv_ca",MPV_DATA_ca,100.,60000);mpv_ca->SetLineColor(1); mpv_ca->SetLineWidth(4); mpv_ca->Draw("same");
     //TF1 *slow_ca = new TF1("slow_ca",MPV_DATA_ca+"-"+cut_dw_ca+"*"+sigma_DATA_ca,100.,60000);slow_ca->SetLineColor(1); slow_ca->SetLineWidth(4); slow_ca->SetLineStyle(9); slow_ca->Draw("same");
     //TF1 *sup_ca  = new TF1("sup_ca", MPV_DATA_ca+"+"+cut_up_ca+"*"+sigma_DATA_ca,100.,60000);sup_ca->SetLineColor(1); sup_ca->SetLineWidth(4); sup_ca->SetLineStyle(9); sup_ca->Draw("same");

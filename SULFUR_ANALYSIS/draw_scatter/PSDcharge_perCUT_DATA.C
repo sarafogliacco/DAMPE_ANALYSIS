@@ -41,7 +41,7 @@
 	cout << "------------------------------------------------------" << endl;
 	cout << " " << endl;
 
-	TFile *foutp = new TFile("out_root/PSDcharge_perCUT_DATA_120months_SULFUR_v2.root","RECREATE");
+	TFile *foutp = new TFile("/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/out_root/PSDcharge_perCUT_DATA_120months_SAr_v0.root","RECREATE");
 	
 	// -------------------------------------------------------------- 	CUT DEFINITION...
 
@@ -70,8 +70,14 @@
 
 
         // 13/11/2025 --- ARGON
-	TString MPV_DATA_Ar = "(17.9443+(0.0876739*log10(BGO_EnergyG_SatCorr_ML_ions)))";
-    TString sigma_DATA_Ar = "(0.125492+(0.0779934*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+	//TString MPV_DATA_Ar = "(17.9443+(0.0876739*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+    //TString sigma_DATA_Ar = "(0.125492+(0.0779934*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+
+	// 27/05/2026 ARGOON 
+
+	TString MPV_DATA_Ar = "(16.762+(1.14769*log10(BGO_EnergyG_SatCorr_ML_ions))+(-0.264239*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(0.00423957*pow(log10(BGO_EnergyG_SatCorr_ML_ions),4)))";
+    TString sigma_DATA_Ar = "(0.242923+(0.0369508*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+
 
 	// 13/11/2025 ___ CALCIUM
 	TString MPV_DATA_Ca = "(19.8698+(0.115209*log10(BGO_EnergyG_SatCorr_ML_ions)))";
@@ -91,21 +97,23 @@
 */	
 	// --------------------
 	
-	TString cutLow = "2.0";
-	TString cutUp = "2.5";
+	TString cutLow_S = "2.0";
+	TString cutUp_S = "2.5";
 	TString PSDcharge = "PSD_PathWeighted_Charge";
-	TCut chargeUP_S  = TCut(PSDcharge+"<("+MPV_DATA_S+"+"+cutUp +"*"+sigma_DATA_S+")");
-	TCut chargeDW_S  = TCut(PSDcharge+">("+MPV_DATA_S+"-"+cutLow+"*"+sigma_DATA_S+")");
+	TCut chargeUP_S  = TCut(PSDcharge+"<("+MPV_DATA_S+"+"+cutUp_S +"*"+sigma_DATA_S+")");
+	TCut chargeDW_S  = TCut(PSDcharge+">("+MPV_DATA_S+"-"+cutLow_S+"*"+sigma_DATA_S+")");
 	TCut chargeCUT_S = chargeUP_S * chargeDW_S;
 
-	TCut chargeUP_Ar  = TCut(PSDcharge+"<("+MPV_DATA_Ar+"+"+cutUp +"*"+sigma_DATA_Ar+")");
-	TCut chargeDW_Ar  = TCut(PSDcharge+">("+MPV_DATA_Ar+"-"+cutLow+"*"+sigma_DATA_Ar+")");
+	TString cutLow_Ar = "1.5";
+	TString cutUp_Ar = "2.0";
+	TCut chargeUP_Ar  = TCut(PSDcharge+"<("+MPV_DATA_Ar+"+"+cutUp_Ar +"*"+sigma_DATA_Ar+")");
+	TCut chargeDW_Ar  = TCut(PSDcharge+">("+MPV_DATA_Ar+"-"+cutLow_Ar+"*"+sigma_DATA_Ar+")");
 	TCut chargeCUT_Ar = chargeUP_Ar * chargeDW_Ar;
-
-	TCut chargeUP_Ca  = TCut(PSDcharge+"<("+MPV_DATA_Ca+"+"+cutUp +"*"+sigma_DATA_Ca+")");
-	TCut chargeDW_Ca  = TCut(PSDcharge+">("+MPV_DATA_Ca+"-"+cutLow+"*"+sigma_DATA_Ca+")");
+/*
+	TCut chargeUP_Ca  = TCut(PSDcharge+"<("+MPV_DATA_Ca+"+"+cutUp_Ca +"*"+sigma_DATA_Ca+")");
+	TCut chargeDW_Ca  = TCut(PSDcharge+">("+MPV_DATA_Ca+"-"+cutLow_Ca+"*"+sigma_DATA_Ca+")");
 	TCut chargeCUT_Ca = chargeUP_Ca * chargeDW_Ca;
-
+*/
 	// ******************************************************************************
 
 	TCut ctot00 = cut00;
@@ -118,7 +126,7 @@
 	TCut ctotPSD= cut00*cut01*cut05*cut06*cutSTK1200*cutPSD;
 	TCut ctotS = cut00*cut01*cut05*cut06*cutSTK1200*cutPSD*chargeCUT_S;
 	TCut ctotAr = cut00*cut01*cut05*cut06*cutSTK1200*cutPSD*chargeCUT_Ar;
-	TCut ctotCa = cut00*cut01*cut05*cut06*cutSTK1200*cutPSD*chargeCUT_Ca;
+	//TCut ctotCa = cut00*cut01*cut05*cut06*cutSTK1200*cutPSD*chargeCUT_Ca;
 
 	// -------------------------------------------------------------- 	FILL HISTOGRAMS...
 
@@ -146,8 +154,8 @@
 	TH1F *hqpsdPathWeight_cutS = new TH1F("hqpsdPathWeight_cutS"," ", 1200, 0., 30.); hqpsdPathWeight_cutS->GetXaxis()->SetTitle("Q_{PSD}"); hqpsdPathWeight_cutS->GetYaxis()->SetTitle("events");
 	skim->Draw("PSD_PathWeighted_Charge>>hqpsdPathWeight_cutS",ctotS,"");
 	
-	//TH1F *hqpsdPathWeight_cutAr = new TH1F("hqpsdPathWeight_cutAr"," ", 1200, 0., 30.); hqpsdPathWeight_cutAr->GetXaxis()->SetTitle("Q_{PSD}"); hqpsdPathWeight_cutAr->GetYaxis()->SetTitle("events");
-	//skim->Draw("PSD_PathWeighted_Charge>>hqpsdPathWeight_cutAr",ctotAr,"");
+	TH1F *hqpsdPathWeight_cutAr = new TH1F("hqpsdPathWeight_cutAr"," ", 1200, 0., 30.); hqpsdPathWeight_cutAr->GetXaxis()->SetTitle("Q_{PSD}"); hqpsdPathWeight_cutAr->GetYaxis()->SetTitle("events");
+	skim->Draw("PSD_PathWeighted_Charge>>hqpsdPathWeight_cutAr",ctotAr,"");
 
 	//TH1F *hqpsdPathWeight_cutCa = new TH1F("hqpsdPathWeight_cutCa"," ", 1200, 0., 30.); hqpsdPathWeight_cutCa->GetXaxis()->SetTitle("Q_{PSD}"); hqpsdPathWeight_cutCa->GetYaxis()->SetTitle("events");
 	//skim->Draw("PSD_PathWeighted_Charge>>hqpsdPathWeight_cutCa",ctotCa,"");

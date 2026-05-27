@@ -4,7 +4,7 @@ import uproot as up
 import awkward as ak
 
 
-file = up.open("out_root/PSDcharge_perCUT_DATA_120months_SULFUR_v2.root")
+file = up.open("/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/out_root/PSDcharge_perCUT_DATA_120months_SAr_v0.root")
 
 #print(file.keys())
 #print(file.classnames())
@@ -17,7 +17,7 @@ cut06_hist = file["hqpsdPathWeight_cut06"].to_numpy()
 stkcut_hist = file["hqpsdPathWeight_stkcut"].to_numpy()
 psdcut_hist = file["hqpsdPathWeight_psdcut"].to_numpy()
 cutS_hist = file["hqpsdPathWeight_cutS"].to_numpy()
-#cutAr_hist = file["hqpsdPathWeight_cutAr"].to_numpy()
+cutAr_hist = file["hqpsdPathWeight_cutAr"].to_numpy()
 #cutCa_hist = file["hqpsdPathWeight_cutCa"].to_numpy()
 
 values, edges = file["hqpsdPathWeight_cut00"].to_numpy()
@@ -34,7 +34,7 @@ plot_hist("hqpsdPathWeight_cut01", "PSD hits on YZ and XZ views", color="#34B800
 plot_hist("hqpsdPathWeight_stkcut", "STK 1st layer > 1200 ADC", color="#26a1ff")
 plot_hist("hqpsdPathWeight_psdcut", r"|PSD$_Y$-PSD$_X$| < 2", color="#ff751f")
 plot_hist("hqpsdPathWeight_cutS", "S cut", color="#626262")
-
+plot_hist("hqpsdPathWeight_cutAr", "Ar cut", color="#626262")
 
 plt.text(0.7, 700000, "H", fontsize=10)
 plt.text(1.7, 500000, "He", fontsize=10)
