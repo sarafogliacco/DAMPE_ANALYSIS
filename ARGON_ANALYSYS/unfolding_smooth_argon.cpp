@@ -19,16 +19,21 @@ const bool TOY_MC_ERROR_ESTIMATE = true;
 const int TOY_MC_ERROR_ESTIMATE_SAMPLES = 10000;
 const double Amc = 2.0 * TMath::Pi() * TMath::Pi();
 //const double livetime = 217488673.3;// 9 years
-const double livetime = 217488673.3 + 23361925.7586;//10 years
+const double livetime = 242576599.4;//10 years
 const double TotTime = livetime * Amc;
 const double alpha = 2.7; // exponential to show flux_pow
 const double egamma = 2.7; // exponential of prior power law
 const int NATTEMPTS = 5; // max n. of unfolding iterations
 int STARTING_DATA_BIN = 1;
-const double STARTING_DATA_VAL = 1e2;//Min E value with N obs events > 0
+const double STARTING_DATA_VAL = 30;//Min E value with N obs events > 0
 
 const std::string Test_Stat = "chi2"; // "ks" (Kolmogorov-Smirnov) or "chi2" (Reduced Chi2)
 double MIN_TS = (Test_Stat == "ks" ? 1e-4 : 1.);
+
+const bool SMOOTHING = true;
+
+std::string fout_name = "unfold_results/unfold_results_argon_6bin_E27_het.root";
+std::string fdat_name = "unfold_results/flux_spectrum_argon__6bin_E27_het.dat";
 
 // Global variables
 std::vector<double> TRUGUESS;
@@ -41,13 +46,14 @@ double median_energy(double e_min, double e_max) {
 }
 
 void prior_prob(int nbins, Double_t *Ebins, std::vector<double>& p0) {
-    double a_norm = (egamma - 1.) * TMath::Power(Ebins[5], egamma - 1.);
-    double prior_sum{0.}, sum_check{0.};
+    double a_norm = (egamma - 1.) * TMath::Power(Ebins[10], egamma - 1.);
+    double prior_sum = 0.;
+    double sum_check = 0.;
     for (int ibin=0; ibin<nbins; ibin++){
         prior_sum += a_norm * (TMath::Power(Ebins[ibin+1], 1. - egamma) - TMath::Power(Ebins[ibin], 1. - egamma)) / (1. - egamma);
     }
     std::cout<<"prior_sum "<<prior_sum<<'\n';
-    std::cout<<"Ebins[5] "<<Ebins[5]<<'\n';
+    std::cout<<"Ebins[10] "<<Ebins[10]<<'\n';
     for (int ibin=0; ibin<nbins; ibin++){
         double prior_pow = a_norm * (TMath::Power(Ebins[ibin+1], 1. - egamma) - TMath::Power(Ebins[ibin], 1. - egamma)) / (1. - egamma);
         p0[ibin] = prior_pow / prior_sum;
@@ -203,8 +209,11 @@ void iterative_bayesian(const Matrix& kernel, const std::vector<double>& eff, co
     std::vector<double> truthprevious;
 
     for(int attempt = 0; attempt < NATTEMPTS; attempt++) {
-        //std::vector<double> smoothtru_prob = truth;//NO SMOOTHING
-        std::vector<double> smoothtru_prob = smooth_(truth, originaltruth);
+        std::vector<double> smoothtru_prob;
+        if (SMOOTHING)
+            smoothtru_prob = smooth_(truth, originaltruth);
+        else
+            smoothtru_prob = truth;//NO SMOOTHING
         double Ntrue{0.};
         for(std::vector<double>::iterator it = smoothtru_prob.begin(); it != smoothtru_prob.end(); ++it){
             Ntrue += *it;
@@ -294,13 +303,13 @@ std::vector<double> compute_std(const std::vector<std::vector<double>>& data) {
     return stds;
 }
 
-int unfolding_smooth_ne() {
+int unfolding_smooth_argon() {
 
     // Parse command line arguments
-    std::string response_file = "OUTPUTS/Out_MC_FTFP_NEON_E2e7_v8_Feb26_20bins_norm34.root";
-    std::string response_histo = "h2Ntrig_wgt";
-    std::string data_file = "OUTPUTS/Out_DATA_120months_NEON_Mar26_20bins.root";
-    std::string data_histo = "h1Nobs_nobkg";
+    std::string response_file = "load/out_load/Out_MC_FTFP_Ar_E2e7_6bin.root ";
+    std::string response_histo = "h2Ntrig_cut01";
+    std::string data_file = "load/out_load/Out_DATA_120months_ARGON_6bin.root";
+    std::string data_histo = "h1Nobs";
     //std::string ngen_file = ""; //uncomment if response-mat to be normalized
     //std::string ngen_histo = ""; //uncomment if response-mat to be normalized
 
@@ -332,7 +341,7 @@ int unfolding_smooth_ne() {
     }
 
     int nbin_obs = hdata->GetNbinsX();
-    int Nobs{0};
+    int Nobs = 0;
     for(int i = 0; i < nbin_obs; i++) {
         Nobs += hdata->GetBinContent(i+1);
     }
@@ -459,6 +468,12 @@ int unfolding_smooth_ne() {
     hresult->SetName("result");
     hresult->SetTitle("result");
 
+    // Create output histograms
+    TH1D* hcts_unf = (TH1D*)hetru->Clone();
+    hcts_unf->SetDirectory(0);
+    hcts_unf->SetName("unfold_cts");
+    hcts_unf->SetTitle("unfold_cts");
+
     TH1D* hflux = (TH1D*)hetru->Clone();
     hflux->SetDirectory(0);
     hflux->SetName("flux");
@@ -469,13 +484,17 @@ int unfolding_smooth_ne() {
     hfluxpow->SetName("flux_pow");
     hfluxpow->SetTitle("flux_pow");
 
-    std::ofstream outfile("DATA_POINTS/flux_spectrum_neon_E2e7_20bins_nobkg_norm34_5iter_toy10000_10y.dat");
-    outfile << "# E  lowE  upE  Flux  StatErr\n";
+    std::ofstream outfile(fdat_name);
+    //outfile << "# E  lowE  upE  Flux  StatErr\n";
+    //TotalEnergyDAMPE[j]>>FluxDAMPE[j]>>Stat_errDAMPE[j]>>EnergyErrDAMPE[j]
     //outfile << std::setprecision(8) << std::scientific;
 
     for(int i = 0; i < nx; i++) {
         hresult->SetBinContent(i+1, result[i]);
         hresult->SetBinError(i+1, resulterr[i]);
+
+        hcts_unf->SetBinContent(i+1, result[i]*hetru->GetBinContent(i+1));
+        hcts_unf->SetBinError(i+1, result[i]*hetru->GetBinContent(i+1));
 
         double lowE = hflux->GetXaxis()->GetBinLowEdge(i+1);
         double upE = hflux->GetXaxis()->GetBinUpEdge(i+1);
@@ -490,7 +509,8 @@ int unfolding_smooth_ne() {
         hfluxpow->SetBinContent(i+1, y * TMath::Power(em, alpha));
         hfluxpow->SetBinError(i+1, yerr * TMath::Power(em, alpha));
 
-        outfile << em << "  " << lowE << "  " << upE << "  " << y << "  " << yerr << "\n";
+        //outfile << em << "  " << lowE << "  " << upE << "  " << y << "  " << yerr << "\n";
+        outfile << em << "\t" << y << "\t" << yerr << "\t0.0\t " << "\n";
     }
 
     hdata->SetLineColor(kRed);
@@ -520,8 +540,7 @@ int unfolding_smooth_ne() {
 
 
     // Save output
-    TString fout_name = "OUTPUTS/unfold_results_neon_E2e7_20bins_nobkg_norm34_5iter_toy10000_10y.root";
-    TFile* fout = TFile::Open(fout_name, "RECREATE");
+    TFile* fout = TFile::Open(fout_name.c_str(), "RECREATE");
     fout->cd();
     h->Write();
     hunfold_matrix->Write();
@@ -531,6 +550,7 @@ int unfolding_smooth_ne() {
     hresult->Write();//unfolded counts
     hflux->Write();
     hfluxpow->Write();
+    hcts_unf->Write();
     //heff->Write();
     //hacc->Write();
 

@@ -34,17 +34,6 @@
     for (int i=1; i<=n2; i++) { Ebin[k++] = TMath::Power(10, 3 + i*(1.0/double(n2))); }
     // 10 TeV - 100 TeV
     for (int i=1; i<=n3; i++) { Ebin[k++] = TMath::Power(10, 4 + i*(1.0/double(n3))); }
-	// 100 TeV - 500 TeV
-	/*
-	double Emin = 1e5;   // 100 TeV
-	double Emax = 5e5;   // 500 TeV
-	double logEmin = log10(Emin);
-	double logEmax = log10(Emax);
-	for (int i=1; i<=n4; i++) {
-    	double x = logEmin + i * (logEmax - logEmin) / double(n4);
-    	Ebin[k++] = pow(10, x);
-		}
-	*/
     // 100 TeV - 1 PeV
     for (int i=1; i<=n4; i++) { Ebin[k++] = TMath::Power(10, 5 + i*(1.0/double(n4))); }
     cout << k << endl;
@@ -78,35 +67,35 @@
 
 	// -------------------------------------------------------------- 	CUTS DEFINITION...
 
-	//  SULFUR
+	//  ARGON
 	auto MPV_MC = [](double E){
     	double x = log10(E);
-    	return 
+    	return 17.3968 + 1.30635*x - 0.270464*x*x + 0.00425924*x*x*x*x;
 	};
 
 	auto sigma_MC = [](double E){
     	double x = log10(E);
-    	return 
+    	return 0.127703 + 0.0172037*x;
 	};
 
 	auto MPV_DATA = [](double E){
     	double x = log10(E);
-    	return 
+    	return 16.762 + 1.14769*x - 0.264239*x*x + 0.00423957*x*x*x*x;
 	};
 
 	auto sigma_DATA = [](double E){
     	double x = log10(E);
-    	return  
+    	return  0.242923 + 0.0369508*x;
 	};
 
 	auto MPV_MC_CORR = [](double E){
     	double x = log10(E);
-    	return 
+    	return 15.8067 + 2.00498*x - 0.467236*x*x + 0.00725191*x*x*x*x;
 	};
 
 	auto sigma_MC_CORR = [](double E){
     	double x = log10(E);
-    	return 
+    	return 0.248734 + 0.035569*x;
 	};
 	
 	// -------------------------------------------------------------- 	HERE, THE MAGIC! (FILLING HISTOGRAMS)
@@ -216,7 +205,7 @@
 	// -------
 
     // -------		
-	TH2F *h2Ntrig_all = new TH2F("h2Ntrig_all", "Ntrig(Eo,Et) all", noe, Ebin, noe, Ebin);
+	//TH2F *h2Ntrig_all = new TH2F("h2Ntrig_all", "Ntrig(Eo,Et) all", noe, Ebin, noe, Ebin);
     TH2F *h2Ntrig_cut00 = new TH2F("h2Ntrig_cut00", "Ntrig(Eo,Et) cut00", noe, Ebin, noe, Ebin);
     TH2F *h2Ntrig_cut01 = new TH2F("h2Ntrig_cut01", "Ntrig(Eo,Et) cut01", noe, Ebin, noe, Ebin);
     TH2F *h2Ntrig_cut05 = new TH2F("h2Ntrig_cut05", "Ntrig(Eo,Et) cut05", noe, Ebin, noe, Ebin);
@@ -224,6 +213,9 @@
     TH2F *h2Ntrig_stk = new TH2F("h2Ntrig_stk", "Ntrig(Eo,Et) stk", noe, Ebin, noe, Ebin);
     TH2F *h2Ntrig_psd = new TH2F("h2Ntrig_psd", "Ntrig(Eo,Et) psd", noe, Ebin, noe, Ebin);
     TH2F *h2Ntrig_charge = new TH2F("h2Ntrig_charge","Ntrig(Eo,Et) charge",noe, Ebin,noe, Ebin);
+
+	TH2F *h2Ntrig_wgt = new TH2F("h2Ntrig_wgt", "Ntrig(Eo,Et) -S- (skim)", noe, Ebin, noe, Ebin);
+
 
 	std::vector<double> wNgen(noe);
 
@@ -278,20 +270,26 @@
 
 
 		Long64_t nentries = skim[i]->GetEntries();
-		// --- Peso totale per evento
-        double w_tot = wNgen[j] * WeightIntegral(j) * WeightSpectral(MC_EnergyT);
+
 		for (Long64_t ev = 0; ev < nentries; ev++) {
 
         skim[i]->GetEntry(ev);
         if (ev%10000==0) cout << "event " << ev << " out of " << nentries << endl;
 
-		h2Ntrig_all->Fill(MC_EnergyT, BGO_Energy, w_tot);
 
         // -----------------------------
         // cut 00
         if (MC_EnergyT < 100.) continue;
         if (BGO_Energy < 100.) continue;
         if (BGO_HET <= 0) continue;
+
+		// --- true-energy bin
+		int j = h1Ngen->FindBin(MC_EnergyT) - 1;
+		if (j < 0 || j >= noe) continue;
+				
+		// --- total event weight
+		double w_tot = wNgen[j] * WeightIntegral(j) *WeightSpectral(MC_EnergyT);
+
         h2Ntrig_cut00->Fill(MC_EnergyT, BGO_Energy, w_tot);
 
         // cut 01
@@ -340,12 +338,7 @@
 		if (QcorrMC >= mpv_corr + cutUp  * sigma_corr) continue;
 		h2Ntrig_charge->Fill(MC_EnergyT, BGO_Energy, w_tot);
 
-        
-        // --- Bin di energia vera
-        int j = h1Ngen->FindBin(MC_EnergyT) - 1;
-        if (j < 0 || j >= noe) continue;
-
-
+		
 
         // --- Fill 2D
         h2Ntrig_wgt->Fill(MC_EnergyT, BGO_Energy, w_tot);
@@ -354,7 +347,7 @@
 	}
 
 	// --------------------------------------------------------------
-	
+
 	cout << " -------------------------------------------" << endl;
 	cout << "           Done!  THIS IS THE END!          " << endl;
 	cout << " -------------------------------------------" << endl;

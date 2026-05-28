@@ -11,15 +11,13 @@
 #include <string>
 #include <cassert>
 #include <fstream>
-#include <iomanip>
-#include <algorithm>
+
 
 // Configuration constants
 const bool TOY_MC_ERROR_ESTIMATE = true;
 const int TOY_MC_ERROR_ESTIMATE_SAMPLES = 10000;
 const double Amc = 2.0 * TMath::Pi() * TMath::Pi();
-//const double livetime = 217488673.3;// 9 years
-const double livetime = 217488673.3 + 23361925.7586;//10 years
+const double livetime =  242576599.4; 
 const double TotTime = livetime * Amc;
 const double alpha = 2.7; // exponential to show flux_pow
 const double egamma = 2.7; // exponential of prior power law
@@ -27,10 +25,11 @@ const int NATTEMPTS = 5; // max n. of unfolding iterations
 int STARTING_DATA_BIN = 1;
 const double STARTING_DATA_VAL = 1e2;//Min E value with N obs events > 0
 
+
 const std::string Test_Stat = "chi2"; // "ks" (Kolmogorov-Smirnov) or "chi2" (Reduced Chi2)
 double MIN_TS = (Test_Stat == "ks" ? 1e-4 : 1.);
 
-// Global variables
+// Global variables  
 std::vector<double> TRUGUESS;
 std::vector<double> NORM_TRUE;
 
@@ -203,8 +202,8 @@ void iterative_bayesian(const Matrix& kernel, const std::vector<double>& eff, co
     std::vector<double> truthprevious;
 
     for(int attempt = 0; attempt < NATTEMPTS; attempt++) {
-        //std::vector<double> smoothtru_prob = truth;//NO SMOOTHING
         std::vector<double> smoothtru_prob = smooth_(truth, originaltruth);
+        //std::vector<double> smoothtru_prob = truth; //no smoothing
         double Ntrue{0.};
         for(std::vector<double>::iterator it = smoothtru_prob.begin(); it != smoothtru_prob.end(); ++it){
             Ntrue += *it;
@@ -294,15 +293,15 @@ std::vector<double> compute_std(const std::vector<std::vector<double>>& data) {
     return stds;
 }
 
-int unfolding_smooth_ne() {
+int unfolding_smooth() {
 
     // Parse command line arguments
-    std::string response_file = "OUTPUTS/Out_MC_FTFP_NEON_E2e7_v8_Feb26_20bins_norm34.root";
+    std::string response_file = "/mnt/c/Users/saraf/Desktop/SULFUR_ANALYSIS/load/out_load/Out_MC_FTFP_S_E2e7_6bin_PSD_500TeV.root";
     std::string response_histo = "h2Ntrig_wgt";
-    std::string data_file = "OUTPUTS/Out_DATA_120months_NEON_Mar26_20bins.root";
-    std::string data_histo = "h1Nobs_nobkg";
-    //std::string ngen_file = ""; //uncomment if response-mat to be normalized
-    //std::string ngen_histo = ""; //uncomment if response-mat to be normalized
+    std::string data_file = "/mnt/c/Users/saraf/Desktop/SULFUR_ANALYSIS/load/out_load/Out_DATA_120months_SULFUR_6bin_PSD.root"; 
+    std::string data_histo = "h1Nobs";
+    //std::string ngen_file = "/mnt/c/Users/saraf/Desktop/dampe/Out_MC_FTFP_SILICON_4bins_E2e7_v8.root"; //uncomment if response-mat to be normalized
+    //std::string ngen_histo = "h1Ngen"; //uncomment if response-mat to be normalized
 
 
     // Load normalized response matrix
@@ -354,44 +353,33 @@ int unfolding_smooth_ne() {
     prior_prob(nx, energy_bins, TRUGUESS);//filling TRUGUESS with power law prop. to E^{-2.6}
 
     //uncomment if response-mat to be normalized
-    /*TFile* fgen = TFile::Open(ngen_file.c_str(), "READ");
+    /*
+    TFile* fgen = TFile::Open(ngen_file.c_str(), "READ");
     if(!fgen || fgen->IsZombie()) {
         std::cerr << "Error opening ngen file" << std::endl;
         return 1;
     }
 
-    TH1D* hgen = (TH1d*)fgen->Get(ngen_histo.c_str());
+    TH1D* hgen = (TH1D*)fgen->Get(ngen_histo.c_str());
     if(!hgen) {
         std::cerr << "Error getting response histogram" << std::endl;
         return 1;
     }
-    NORM_TRUE.resize(nx);*/
+    NORM_TRUE.resize(nx);
+*/
 
     std::vector<double> eff;
     eff.resize(nx);
-    std::vector<double> acc;
-    acc.resize(nx);
     
+
     TH1D* truthguess = h->ProjectionX("hprior_guess");
     TH1D* hetru = h->ProjectionX("htru");
-    TH1D* heff = (TH1D*)hetru->Clone();
-    heff->SetDirectory(0);
-    heff->SetName("eff");
-    heff->SetTitle("eff");
-    TH1D* hacc = (TH1D*)hetru->Clone();
-    hacc->SetDirectory(0);
-    hacc->SetName("acc");
-    hacc->SetTitle("acc");
 
     for(int i = 0; i < nx; i++) {
         TRUGUESS[i] *= Nobs;
         truthguess->SetBinContent(i+1, TRUGUESS[i]);
         //NORM_TRUE[i] = hgen->GetBinContent(i+1); //uncomment if response-mat to be normalized
         eff[i] = hetru->GetBinContent(i+1);
-        acc[i] = Amc*hetru->GetBinContent(i+1);
-        heff->SetBinContent(i+1, eff[i]);
-        heff->SetBinContent(i+1, hetru->GetBinError(i+1));
-        hacc->SetBinContent(i+1, Amc*hetru->GetBinError(i+1));
     }
     //normalize_kernel(m, eff); //uncomment if response-mat to be normalized
     m = m.transpose();
@@ -469,10 +457,6 @@ int unfolding_smooth_ne() {
     hfluxpow->SetName("flux_pow");
     hfluxpow->SetTitle("flux_pow");
 
-    std::ofstream outfile("DATA_POINTS/flux_spectrum_neon_E2e7_20bins_nobkg_norm34_5iter_toy10000_10y.dat");
-    outfile << "# E  lowE  upE  Flux  StatErr\n";
-    //outfile << std::setprecision(8) << std::scientific;
-
     for(int i = 0; i < nx; i++) {
         hresult->SetBinContent(i+1, result[i]);
         hresult->SetBinError(i+1, resulterr[i]);
@@ -489,8 +473,6 @@ int unfolding_smooth_ne() {
         double em = median_energy(lowE, upE);
         hfluxpow->SetBinContent(i+1, y * TMath::Power(em, alpha));
         hfluxpow->SetBinError(i+1, yerr * TMath::Power(em, alpha));
-
-        outfile << em << "  " << lowE << "  " << upE << "  " << y << "  " << yerr << "\n";
     }
 
     hdata->SetLineColor(kRed);
@@ -518,12 +500,108 @@ int unfolding_smooth_ne() {
         }
     }
 
+    // Save data
+    std::ofstream txtout("data/flux_pow_SULFUR_6bin_PSD_2e7.txt");
+    if(!txtout.is_open()){
+        std::cerr << "Error opening flux_pow.txt" << std::endl;
+        return 1;
+    }
+
+    // Header
+    txtout << "# Emin  Emax  Emed  flux_pow  flux_pow_err\n";
+
+    for(int i = 0; i < nx; i++) {
+
+        double Emin = hfluxpow->GetXaxis()->GetBinLowEdge(i+1);
+        double Emax = hfluxpow->GetXaxis()->GetBinUpEdge(i+1);
+        double Emed = median_energy(Emin, Emax);
+
+        double fluxpow = hfluxpow->GetBinContent(i+1);
+        double fluxpow_err = hfluxpow->GetBinError(i+1);
+
+        txtout << Emin << " "
+               << Emax << " "
+               << Emed << " "
+               << fluxpow << " "
+               << fluxpow_err << "\n";
+    }
+
+    txtout.close();
+
+    /*
+    std::ofstream out("unfold_results/hresult_SULFUR_6bin.txt");
+    out << "# bin  lowEdge  upEdge  content  error\n";
+
+    for (int i = 1; i <= hresult->GetNbinsX(); i++) {
+        double low  = hresult->GetXaxis()->GetBinLowEdge(i);
+        double up   = hresult->GetXaxis()->GetBinUpEdge(i);
+        double val  = hresult->GetBinContent(i);
+        double err  = hresult->GetBinError(i);
+
+        out << i << " "
+         << low << " "
+         << up << " "
+            << val << " "
+            << err << "\n";
+    }   
+
+    out.close();
+    */
+
+    TH1D* hacc = (TH1D*)hetru->Clone("hacc");
+    hacc->SetDirectory(0);
+    int maxibin=hacc->GetNbinsX();
+    for(int ibin=0; ibin<maxibin; ibin++){
+        double cont=hacc->GetBinContent(ibin+1);
+        hacc->SetBinContent(ibin+1,cont*Amc);
+    }
+
+
+    TH1D* hscaled = (TH1D*) hresult->Clone("hscaled");
+    hscaled->SetDirectory(0);
+    hscaled->SetTitle("hresult scaled by x^2.7");
+
+    int nbins_2 = hresult->GetNbinsX();
+
+
+    for (int i = 1; i <= nbins_2; i++) {  
+        double x = hresult->GetBinCenter(i);      
+        double y = hresult->GetBinContent(i);     
+        double err = hresult->GetBinError(i);     
+
+    
+        double ynew = y * pow(x, 1.7);
+        double errnew = err * pow(x, 1.7);  
+
+        hscaled->SetBinContent(i, ynew);
+        hscaled->SetBinError(i, errnew);
+    }
+
+    TH1D* counts_scaled = (TH1D*)hdata->Clone("counts_scaled");
+    counts_scaled->SetDirectory(0);
+    int nbins_3 = counts_scaled->GetNbinsX();
+    for (int i = 1; i <= nbins_3; i++) {  
+        double x = counts_scaled->GetBinCenter(i);      
+        double y = counts_scaled->GetBinContent(i);     
+        double err = counts_scaled->GetBinError(i);     
+
+    
+        double ynew = y * pow(x, 1.7);
+        double errnew = err * pow(x, 1.7);  
+
+        counts_scaled->SetBinContent(i, ynew);
+        counts_scaled->SetBinError(i, errnew);
+    }
+
+
 
     // Save output
-    TString fout_name = "OUTPUTS/unfold_results_neon_E2e7_20bins_nobkg_norm34_5iter_toy10000_10y.root";
+    TString fout_name = "unfold_results/unfold_results_SULFUR_6bin_PSD_2e7.root";
     TFile* fout = TFile::Open(fout_name, "RECREATE");
     fout->cd();
     h->Write();
+    hetru->Write(); //efficiency
+    hacc->Write(); //acceptance
     hunfold_matrix->Write();
     truthguess->Write();//prior distribution-guess
     htestobs->Write();//prediction of expected counts from unfolded flux
@@ -531,21 +609,10 @@ int unfolding_smooth_ne() {
     hresult->Write();//unfolded counts
     hflux->Write();
     hfluxpow->Write();
-    //heff->Write();
-    //hacc->Write();
-
-    TH1D* hacc1 = (TH1D*)hetru->Clone("hacc1");
-    //hacc1->SetDirectory(0);
-    int maxibin=hacc1->GetNbinsX();
-    for(int ibin=0; ibin<maxibin; ibin++){
-        double cont=hacc1->GetBinContent(ibin+1);
-        hacc1->SetBinContent(ibin+1,cont*Amc);
-    }
-
-    hetru->Write(); //efficiency
-    hacc1->Write(); //acceptance
-
+    hscaled->Write();
+    counts_scaled->Write();
     fout->Close();
+
 
     std::cout << "Results saved to "<< fout_name << std::endl;
     // Cleanup

@@ -86,7 +86,6 @@
 	TString PSDcharge = "PSD_PathWeighted_Charge";
 
 	TString MPV_MC =  "(17.3968+(1.30635*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.270464*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.00425924*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),4)))";
-
 	TString sigma_MC = "(0.127703+(0.0172037*log10(BGO_EnergyG_QuenchSatCorr_ML_ions)))";
 
 	TString MPV_DATA = "(16.762+(1.14769*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.264239*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.00423957*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),4)))";
