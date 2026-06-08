@@ -1,0 +1,15 @@
+TString MPV_DATA = "(14.5821+(1.51344*log10(BGO_EnergyG_SatCorr_ML_ions))+(-0.48318*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(0.0520877*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+14.5821 + 1.51344*x - 0.48318*x*x + 0.0520877*x*x*x;
+TString sigma_DATA = "(0.231952+(0.0318629*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+0.231952 + 0.0318629*x;
+
+
+TString MPV_MC = "(14.8272+(1.92572*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.568508*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.0593389*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+14.8272 + 1.92572*x - 0.568508*x*x + 0.0593389*x*x*x;
+TString sigma_MC = "(0.105133+(0.0196781*log10(BGO_EnergyG_QuenchSatCorr_ML_ions)))";
+0.105133 + 0.0196781*x;
+
+TString MPV_MC_corr = "(13.8877+(2.23861*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.724076*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.077887*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+13.8877 + 2.23861*x - 0.724076*x*x + 0.077887*x*x*x;
+TString sigma_MC_corr = "(0.1905+(0.0480417*log10(BGO_EnergyG_QuenchSatCorr_ML_ions)))";
+0.1905 + 0.0480417*x;

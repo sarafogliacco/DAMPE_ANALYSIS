@@ -1,0 +1,56 @@
+
+Processing cfr_DATA_MC_sulfur_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      649.003
+NDf                       =            8
+Edm                       =   8.3161e-20
+NCalls                    =           47
+p0                        =     0.105133   +/-   0.00184108  
+p1                        =    0.0196781   +/-   0.000673359 
+TString sigma_MC = "(0.105133+(0.0196781*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =       1.1183
+NDf                       =            6
+Edm                       =  4.36573e-21
+NCalls                    =           42
+p0                        =     0.231952   +/-   0.015208    
+p1                        =    0.0318629   +/-   0.00647592  
+TString sigma_DATA = "(0.231952+(0.0318629*log10(BGO_EnergyG_SatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+
+CORRECTED
+Processing cfr_DATA_MC_sulfur_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      173.923
+NDf                       =            8
+Edm                       =  2.08968e-19
+NCalls                    =           42
+p0                        =       0.1905   +/-   0.00301309  
+p1                        =    0.0480417   +/-   0.00121033  
+TString sigma_MC = "(0.1905+(0.0480417*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =       1.1183
+NDf                       =            6
+Edm                       =  4.36573e-21
+NCalls                    =           42
+p0                        =     0.231952   +/-   0.015208    
+p1                        =    0.0318629   +/-   0.00647592  
+TString sigma_DATA = "(0.231952+(0.0318629*log10(BGO_EnergyG_SatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+

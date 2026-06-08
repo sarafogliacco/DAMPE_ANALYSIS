@@ -1,0 +1,36 @@
+/home/sfogliacco/miniconda3/envs/dampe/bin/root.exe: /home/sfogliacco/miniconda3/envs/dampe/bin/../lib/libpcre2-8.so.0: no version information available (required by /home/sfogliacco/miniconda3/envs/dampe/bin/../lib/libCore.so.6.36)
+
+Processing Load_DATA_SULFUR.C...
+Bin 1: 100 - 133.352
+Bin 2: 133.352 - 177.828
+Bin 3: 177.828 - 237.137
+Bin 4: 237.137 - 316.228
+Bin 5: 316.228 - 421.697
+Bin 6: 421.697 - 562.341
+Bin 7: 562.341 - 749.894
+Bin 8: 749.894 - 1000
+Bin 9: 1000 - 1333.52
+Bin 10: 1333.52 - 1778.28
+Bin 11: 1778.28 - 2371.37
+Bin 12: 2371.37 - 3162.28
+Bin 13: 3162.28 - 4216.97
+Bin 14: 4216.97 - 5623.41
+Bin 15: 5623.41 - 7498.94
+Bin 16: 7498.94 - 10000
+Bin 17: 10000 - 17782.8
+Bin 18: 17782.8 - 31622.8
+Bin 19: 31622.8 - 56234.1
+Bin 20: 56234.1 - 100000
+Bin 21: 100000 - 316228
+Bin 22: 316228 - 1e+06
+Bin 23: 1e+06 - 3.16228e+06
+Bin 24: 3.16228e+06 - 1e+07
+ 
+------------------------------------------------------
+  Number of entries (10 years / 120 months): 39903265
+------------------------------------------------------
+ 
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+ -------------------------------------------
+       Done!  THIS IS THE END!  MIAO        
+ -------------------------------------------
