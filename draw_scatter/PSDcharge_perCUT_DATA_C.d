@@ -1,0 +1,4 @@
+
+# DO NOT DELETE
+./PSDcharge_perCUT_DATA_C.so: /home/sfogliacco/miniconda3/envs/dampe/include/RVersion.h /home/sfogliacco/miniconda3/envs/dampe/include/ROOT/RConfig.hxx /home/sfogliacco/miniconda3/envs/dampe/include/TClass.h /home/sfogliacco/miniconda3/envs/dampe/include/TDictAttributeMap.h /home/sfogliacco/miniconda3/envs/dampe/include/TInterpreter.h /home/sfogliacco/miniconda3/envs/dampe/include/TROOT.h /home/sfogliacco/miniconda3/envs/dampe/include/TBuffer.h /home/sfogliacco/miniconda3/envs/dampe/include/TMemberInspector.h /home/sfogliacco/miniconda3/envs/dampe/include/TError.h /home/sfogliacco/miniconda3/envs/dampe/include/RtypesImp.h /home/sfogliacco/miniconda3/envs/dampe/include/TIsAProxy.h /home/sfogliacco/miniconda3/envs/dampe/include/TFileMergeInfo.h /home/sfogliacco/miniconda3/envs/dampe/include/TCollectionProxyInfo.h /home/sfogliacco/miniconda3/envs/dampe/bin/rootcling
+PSDcharge_perCUT_DATA_C__ROOTBUILDVERSION= 6.36.06

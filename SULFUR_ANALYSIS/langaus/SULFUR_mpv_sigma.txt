@@ -1,0 +1,60 @@
+
+Processing cfr_DATA_MC_sulfur_mpv.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      50.8262
+NDf                       =            6
+Edm                       =  1.85473e-06
+NCalls                    =          129
+p0                        =      14.8432   +/-   0.028213    
+p1                        =      1.90786   +/-   0.0296769   
+p2                        =    -0.562681   +/-   0.0101245   
+p3                        =    0.0587963   +/-   0.00111739  
+TString MPV_MC = "(14.8432+(1.90786*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2))+(-0.562681*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions2),2))+(0.0587963*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions2),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      3.17052
+NDf                       =            4
+Edm                       =  4.93431e-09
+NCalls                    =          122
+p0                        =      15.0965   +/-   0.273011    
+p1                        =     0.926641   +/-   0.296363    
+p2                        =     -0.26595   +/-   0.104355    
+p3                        =    0.0260414   +/-   0.0118697   
+TString MPV_DATA = "(15.0965+(0.926641*log10(BGO_EnergyG_SatCorr_ML_ions2))+(-0.26595*pow(log10(BGO_EnergyG_SatCorr_ML_ions2),2))+(0.0260414*pow(log10(BGO_EnergyG_SatCorr_ML_ions2),3)))";
+
+
+Processing cfr_DATA_MC_sulfur_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      120.126
+NDf                       =            8
+Edm                       =  3.03925e-19
+NCalls                    =           42
+p0                        =     0.102391   +/-   0.00298707  
+p1                        =     0.023571   +/-   0.00106757  
+TString sigma_MC = "(0.102391+(0.023571*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      10.2295
+NDf                       =            6
+Edm                       =  1.96426e-20
+NCalls                    =           40
+p0                        =     0.194339   +/-   0.014731    
+p1                        =    0.0486462   +/-   0.00619457  
+TString sigma_DATA = "(0.194339+(0.0486462*log10(BGO_EnergyG_SatCorr_ML_ions2)))";
+
