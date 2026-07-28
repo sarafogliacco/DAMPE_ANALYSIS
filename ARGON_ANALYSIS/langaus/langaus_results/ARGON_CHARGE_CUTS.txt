@@ -1,0 +1,19 @@
+ARGON CHARGE CUTS
+
+DATA
+TString MPV_DATA = "(18.0001+(0.034601*log10(BGO_EnergyG_SatCorr_ML_ions))+(0.0082692*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2)))";
+18.0001 + 0.034601*x + 0.0082692*x*x;
+TString sigma_DATA = "(0.301538+(0.0364786*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+0.301538 + 0.0364786*x;
+
+MC
+TString MPV_MC = "(18.4682+(0.334785*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.0273121*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2)))";
+18.4682 + 0.334785*x - 0.0273121*x*x;
+TString sigma_MC = "(0.127703+(0.0172037*log10(BGO_EnergyG_QuenchSatCorr_ML_ions)))";
+0.127703 + 0.0172037*x;
+
+MC corrected
+TString MPV_MC = "(17.8807+(0.0823378*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(0.00852829*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2)))";
+17.8807 + 0.0823378*x + 0.00852829*x*x;
+TString sigma_MC = "(0.301804+(0.0372073*log10(BGO_EnergyG_QuenchSatCorr_ML_ions)))";
+0.301804 + 0.0372073*x;

@@ -1,0 +1,15 @@
+/home/sfogliacco/miniconda3/envs/dampe/bin/root.exe: /home/sfogliacco/miniconda3/envs/dampe/bin/../lib/libpcre2-8.so.0: no version information available (required by /home/sfogliacco/miniconda3/envs/dampe/bin/../lib/libCore.so.6.36)
+
+Processing Load_DATA_ARGON.C...
+/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/load/./Load_DATA_ARGON.C:144:17: error: redefinition of 'MPV_DATA'
+        TString MPV_DATA = "(16.762+(1.14769*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.264239*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.00423957*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),4)))";
+                ^
+/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/load/./Load_DATA_ARGON.C:133:17: note: previous definition is here
+        TString MPV_DATA = "(14.5821+(1.51344*log10(BGO_EnergyG_SatCorr_ML_ions))+(-0.48318*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(0.0520877*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+                ^
+/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/load/./Load_DATA_ARGON.C:145:17: error: redefinition of 'sigma_DATA'
+        TString sigma_DATA = "(0.242923+(0.0369508*log10(BGO_EnergyG_SatCorr_ML_ions)))";
+                ^
+/mnt/c/Users/saraf/Desktop/DAMPE_ANALYSIS/ARGON_ANALYSYS/load/./Load_DATA_ARGON.C:137:17: note: previous definition is here
+        TString sigma_DATA = "(0.20977+(0.0478004*log10(BGO_EnergyG_SatCorr_ML_ions))+(-0.00269758*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2)))";
+                ^

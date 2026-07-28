@@ -1,0 +1,68 @@
+
+Processing cfr_DATA_MC_argon_mpv.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      23.3826
+NDf                       =            5
+Edm                       =  3.64833e-14
+NCalls                    =          141
+p0                        =      17.3968   +/-   0.0265756   
+p1                        =      1.30635   +/-   0.0237508   
+p2                        =    -0.270464   +/-   0.00586492  
+p3                        =            0   +/-   1.41421     
+p4                        =   0.00425924   +/-   0.000101232 
+TString MPV_MC = "(17.3968+(1.30635*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.270464*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.00425924*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),4)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+         Invalid FitResult  (status = 2 )
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      15.6011
+NDf                       =            3
+Edm                       =  4.75123e-09
+NCalls                    =          124
+p0                        =       16.762   +/-   0           
+p1                        =      1.14769   +/-   0           
+p2                        =    -0.264239   +/-   0           
+p3                        =            0   +/-   0           
+p4                        =   0.00423957   +/-   0           
+TString MPV_DATA = "(16.762+(1.14769*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.264239*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.00423957*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),4)))";
+
+
+Processing cfr_DATA_MC_argon_mpv.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      25.2695
+NDf                       =            6
+Edm                       =  8.82115e-12
+NCalls                    =          144
+p0                        =      16.9725   +/-   0.036743    
+p1                        =      1.85878   +/-   0.037046    
+p2                        =    -0.535509   +/-   0.0122544   
+p3                        =    0.0554495   +/-   0.00133261  
+TString MPV_MC = "(16.9725+(1.85878*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.535509*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      14.8271
+NDf                       =            4
+Edm                       =  6.98747e-08
+NCalls                    =          127
+p0                        =      16.3591   +/-   0.446371    
+p1                        =      1.68806   +/-   0.479235    
+p2                        =    -0.528129   +/-   0.166531    
+p3                        =    0.0555011   +/-   0.0186166   
+TString MPV_DATA = "(16.3591+(1.68806*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.528129*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.0555011*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+

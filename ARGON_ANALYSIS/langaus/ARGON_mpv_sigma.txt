@@ -1,0 +1,59 @@
+
+Processing cfr_DATA_MC_argon_mpv.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      1033.74
+NDf                       =            7
+Edm                       =  2.46515e-15
+NCalls                    =           81
+p0                        =      18.7132   +/-   0.0138812   
+p1                        =     0.155988   +/-   0.00923801  
+p2                        =   0.00436335   +/-   0.00152697  
+TString MPV_MC = "(18.7132+(0.155988*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2))+(0.00436335*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions2),2)))";
+18.7132 + 0.155988*x*x + 0.00436335*x*x;
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      1.24059
+NDf                       =            5
+Edm                       =   5.6566e-13
+NCalls                    =           79
+p0                        =       18.059   +/-   0.197135    
+p1                        =   -0.0127526   +/-   0.15595     
+p2                        =    0.0173292   +/-   0.0300176   
+TString MPV_DATA = "(18.059+(-0.0127526*log10(BGO_EnergyG_SatCorr_ML_ions2))+(0.0173292*pow(log10(BGO_EnergyG_SatCorr_ML_ions2),2)))";
+18.059 - 0.0127526*x + 0.0173292*x*x;
+
+
+Processing cfr_DATA_MC_argon_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      84.2713
+NDf                       =            8
+Edm                       =  2.25195e-21
+NCalls                    =           42
+p0                        =     0.131044   +/-   0.00322537  
+p1                        =    0.0168788   +/-   0.00116242  
+TString sigma_MC = "(0.131044+(0.0168788*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2)))";
+0.131044 + 0.0168788*x;
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =       2.6964
+NDf                       =            6
+Edm                       =  6.16094e-23
+NCalls                    =           38
+p0                        =     0.218835   +/-   0.0648262   
+p1                        =    0.0744178   +/-   0.0277843   
+TString sigma_DATA = "(0.218835+(0.0744178*log10(BGO_EnergyG_SatCorr_ML_ions2))";
+0.218835 + 0.0744178*x;

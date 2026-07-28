@@ -1,0 +1,28 @@
+
+Processing cfr_DATA_MC_argon_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      145.237
+NDf                       =            8
+Edm                       =  3.64598e-23
+NCalls                    =           42
+p0                        =     0.127703   +/-   0.00301576  
+p1                        =    0.0172037   +/-   0.0010987   
+TString sigma_MC = "(0.127703+(0.0172037*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      1.57563
+NDf                       =            6
+Edm                       =   1.6026e-22
+NCalls                    =           40
+p0                        =     0.242923   +/-   0.0805456   
+p1                        =    0.0369508   +/-   0.0375153   
+TString sigma_DATA = "(0.242923+(0.0369508*log10(BGO_EnergyG_SatCorr_ML_ions))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(nan*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+
