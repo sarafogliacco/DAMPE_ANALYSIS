@@ -1,0 +1,62 @@
+
+Processing cfr_DATA_MC_mpv.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      234.118
+NDf                       =            6
+Edm                       =  8.16405e-08
+NCalls                    =          131
+p0                        =      9.19344   +/-   0.0303361   
+p1                        =       1.3762   +/-   0.0317764   
+p2                        =     -0.45392   +/-   0.0107183   
+p3                        =    0.0534493   +/-   0.00116097  
+TString MPV_MC = "(9.19344+(1.3762*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(-0.45392*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2))+(0.0534493*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),3)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      23.7506
+NDf                       =            4
+Edm                       =  9.66498e-12
+NCalls                    =          144
+p0                        =      10.0182   +/-   0.161707    
+p1                        =   -0.0839296   +/-   0.172524    
+p2                        =    0.0451273   +/-   0.0597737   
+p3                        =  -0.00272286   +/-   0.00672353  
+TString MPV_DATA = "(10.0182+(-0.0839296*log10(BGO_EnergyG_SatCorr_ML_ions))+(0.0451273*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2))+(-0.00272286*pow(log10(BGO_EnergyG_SatCorr_ML_ions),3)))";
+
+
+Processing cfr_DATA_MC_sigma.C...
+
+ *** MC fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =        31.14
+NDf                       =            7
+Edm                       =  2.19864e-18
+NCalls                    =           83
+p0                        =     0.222446   +/-   0.0114054   
+p1                        =   -0.0825142   +/-   0.00819909  
+p2                        =    0.0189057   +/-   0.00146128  
+TString sigma_MC = "(0.222446+(-0.0825142*log10(BGO_EnergyG_QuenchSatCorr_ML_ions))+(0.0189057*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions),2)))";
+
+
+ *** DATA fit *** 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =      13.8685
+NDf                       =            5
+Edm                       =  3.87138e-19
+NCalls                    =           77
+p0                        =     0.233871   +/-   0.06375     
+p1                        =   -0.0557627   +/-   0.0484265   
+p2                        =    0.0206737   +/-   0.00906218  
+TString sigma_DATA = "(0.233871+(-0.0557627*log10(BGO_EnergyG_SatCorr_ML_ions))+(0.0206737*pow(log10(BGO_EnergyG_SatCorr_ML_ions),2)))";
+
