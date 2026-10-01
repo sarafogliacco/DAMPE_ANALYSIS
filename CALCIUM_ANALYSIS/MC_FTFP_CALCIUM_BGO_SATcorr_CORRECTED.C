@@ -1,0 +1,159 @@
+{
+	#include "TChain.h"
+	#include "TCut.h"
+	#include "TString.h"
+	#include "TMath.h"
+	#include "TH1F.h"
+	#include "TFile.h"
+	#include "math.h"
+	#include <string>
+	#include <cstring>
+	#include <fstream>
+	#include <vector>
+
+	const int NUM_SET = 3;
+
+	// -------------------------------------------------------------- 	DATA LOADING...
+	TChain *skim[NUM_SET];
+	for(int i=0; i < NUM_SET; i++){ skim[i] = new TChain("newtree"); }
+	// ------- 100 GeV - 1 TeV
+	skim[0]->Add("/mnt/c/Users/saraf/Desktop/dampe/MC/MC_CALCIUM/skim_MC_allCa40_100GeV_1TeV_merged.root");
+	// ------- 1 - 10 TeV 
+	skim[1]->Add("/mnt/c/Users/saraf/Desktop/dampe/MC/MC_CALCIUM/skim_MC_allCa40_1TeV_10TeV_merged.root");
+	// ------- 10 - 100 TeV 
+	skim[2]->Add("/mnt/c/Users/saraf/Desktop/dampe/MC/MC_CALCIUM/skim_MC_allCa40_10TeV_100TeV_merged.root");
+        // ------- 500 TeV - 1 PeV
+    //skim[4]->Add("");
+
+	// Number of entries ...
+	cout << " " << endl;
+	cout << "-----------------------------------" << endl;
+	cout << "Number of entries: " << endl;
+	cout << "100GeV - 1TeV  : " << skim[0]->GetEntries() << endl;
+	cout << "  1TeV - 10TeV : " << skim[1]->GetEntries() << endl;
+	cout << " 10TeV - 100TeV: " << skim[2]->GetEntries() << endl;
+	//cout << "100TeV - 500TeV:  " <<skim[3]->GetEntries() << endl;
+	//cout << "500TeV - 1 PeV :  " <<skim[4]->GetEntries() << endl;
+	cout << "-----------------------------------" << endl;
+	cout << " " << endl;
+
+	// -------------------------------------------------------------- 	WEIGHTS DEFINITION...
+
+	TCut wCa[NUM_SET]; 
+	wCa[0] = "(1./50920000.)*log(10.)";
+	wCa[1] = "(1./50678000.)*log(10.)";
+	wCa[2] = "(1./10030800.)*log(10.)";
+	//wCa[3] = "(1./1669300.)*log(5.)";
+	//wCa[4] = "(1./3050580.)*log(2.)";
+
+	TCut wEnergy = "(MC_EnergyT)**(-1.7)";
+
+	TCut wCaN[NUM_SET];
+	for (int i=0; i<NUM_SET; i++) { wCaN[i] = wCa[i]*wEnergy; };
+
+	// -------------------------------------------------------------- 	CUTS DEFINITION...
+
+	TCut cTrig_HEP = "BGO_HET>0.";
+	TCut cEne = "BGO_EnergyG_QuenchSatCorr_ML_ions2>100."; // Min deposited energy [GeV]
+	TCut cut00  = cTrig_HEP*cEne;
+	TCut cut01  = "(PSD_ChargeY0>0.0 || PSD_ChargeY1>0.0) && (PSD_ChargeX0>0.0 || PSD_ChargeX1>0.0)";    //(Elisabetta 02-12-2021)   
+
+	TCut cut05  = "fabs(BGO_cbgomax[0]-BGO_cbgostk[0])<30.0 && fabs(BGO_cbgomax[1]-BGO_cbgostk[1])<30.0";
+
+	TCut cut06 = "fabs(STKtrack_to_PSD_topY)< 400. && fabs(STKtrack_to_PSD_topX) < 400";
+
+	// STK cut (Elisabetta 22-02-2024)
+	TCut cutSTK1200 = "((((TMath::Sign(1.,STK_chargeY_etaCorr[0])+1.)/2.*STK_chargeY_etaCorr[0] + (TMath::Sign(1.,STK_chargeX_etaCorr[0])+1.)/2.*STK_chargeX_etaCorr[0]) / ((TMath::Sign(1.,STK_chargeY_etaCorr[0])+1.)/2. + (TMath::Sign(1.,STK_chargeX_etaCorr[0])+1.)/2.) ) >1200.)";
+
+	// 06-11-2023 --> Provo ad implementare un taglio sul PSD scegliendo solo gli eventi che hanno una consistenza tra le due viste del PSD!
+	// 				  In particolare: impongo che la differenza tra la carica in una vista (singolo hit o media) abbia una differenza minore di 2 con l'altra vista.
+	TCut cutPSD = "fabs(( ( (TMath::Sign(1.,PSD_ChargeY0) + 1.)/2. * PSD_ChargeY0 + (TMath::Sign(1.,PSD_ChargeY1) + 1.)/2. * PSD_ChargeY1 ) / ((TMath::Sign(1.,PSD_ChargeY0) + 1.)/2. + (TMath::Sign(1.,PSD_ChargeY1) + 1.)/2.) ) - ( ( (TMath::Sign(1.,PSD_ChargeX0) + 1.)/2. * PSD_ChargeX0 + (TMath::Sign(1.,PSD_ChargeX1) + 1.)/2. * PSD_ChargeX1 ) / ((TMath::Sign(1.,PSD_ChargeX0) + 1.)/2. + (TMath::Sign(1.,PSD_ChargeX1) + 1.)/2.) ) ) < 2.";
+		
+	// -------   TAGLIO COMPLESSIVO   -------
+	TCut ctot = cut00*cut01*cut05*cut06*cutSTK1200*cutPSD;
+
+	TCut bgo01 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 100.)    && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 177.828)";              
+	TCut bgo02 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 177.828) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 316.228)";              
+	TCut bgo03 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 316.228) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 562.341)";              	
+	TCut bgo04 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 562.341) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 1000.0)";             
+	TCut bgo05 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 1000.0)  && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 1778.28)";              
+	TCut bgo06 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 1778.28) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 3162.28)";              
+	TCut bgo07 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 3162.28) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 5623.41)";              
+	TCut bgo08 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 5623.41) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 10000.0)";              
+	TCut bgo09 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 10000.0) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 31622.8)";              
+	TCut bgo10 = "(BGO_EnergyG_QuenchSatCorr_ML_ions2 > 31622.8) && (BGO_EnergyG_QuenchSatCorr_ML_ions2 < 100000.0)";
+
+	TString PSDcharge = "PSD_PathWeighted_Charge";
+
+	// september 2026
+	TString MPV_MC =  "(20.7846+(0.194453*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2)))";
+	//"(18.3402+(2.56182*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2))+(-0.740592*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions2),2))+(0.0745682*pow(log10(BGO_EnergyG_QuenchSatCorr_ML_ions2),3)))";
+	TString sigma_MC = "(0.130552+(0.0193199*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2)))";
+	//"(0.12978+(0.0201137*log10(BGO_EnergyG_QuenchSatCorr_ML_ions2)))";
+	
+	TString MPV_DATA = "(20.0824+(0.0376934*log10(BGO_EnergyG_SatCorr_ML_ions2)))";
+	//"(18.442+(1.68026*log10(BGO_EnergyG_SatCorr_ML_ions2))+(-0.553827*pow(log10(BGO_EnergyG_SatCorr_ML_ions2),2))+(0.0619095*pow(log10(BGO_EnergyG_SatCorr_ML_ions2),3)))";
+	TString sigma_DATA = "(0.317048+(0.019081*log10(BGO_EnergyG_SatCorr_ML_ions2)))";
+	//"(0.154248+(0.0771783*log10(BGO_EnergyG_SatCorr_ML_ions2)))";
+					 
+	// -------------------------------------------------------------- 	HISTOGRAMS DEFINITION...
+	
+	TH1F *h01=new TH1F("h01", "100 GeV < E_{BGO} < 178 GeV",1200, 16.,24.); h01->GetXaxis()->SetTitle("PSD charge"); h01->GetYaxis()->SetTitle("normalized MC events"); h01->SetLineColor(kViolet); h01->SetMarkerColor(kViolet); h01->Sumw2();
+	TH1F *h02=new TH1F("h02", "178 GeV < E_{BGO} < 316 GeV",1200, 16.,24.); h02->GetXaxis()->SetTitle("PSD charge"); h02->GetYaxis()->SetTitle("normalized MC events"); h02->SetLineColor(kViolet); h02->SetMarkerColor(kViolet); h02->Sumw2();
+	TH1F *h03=new TH1F("h03", "316 GeV < E_{BGO} < 562 GeV",1200, 16.,24.); h03->GetXaxis()->SetTitle("PSD charge"); h03->GetYaxis()->SetTitle("normalized MC events"); h03->SetLineColor(kViolet); h03->SetMarkerColor(kViolet); h03->Sumw2();
+	TH1F *h04=new TH1F("h04", "562 GeV < E_{BGO} < 1.0 TeV",1200, 16.,24.); h04->GetXaxis()->SetTitle("PSD charge"); h04->GetYaxis()->SetTitle("normalized MC events"); h04->SetLineColor(kViolet); h04->SetMarkerColor(kViolet); h04->Sumw2();
+	TH1F *h05=new TH1F("h05", "1.0 TeV < E_{BGO} < 1.8 TeV", 1200,16.,24.); h05->GetXaxis()->SetTitle("PSD charge"); h05->GetYaxis()->SetTitle("normalized MC events"); h05->SetLineColor(kViolet); h05->SetMarkerColor(kViolet); h05->Sumw2();
+	TH1F *h06=new TH1F("h06", "1.8 TeV < E_{BGO} < 3.2 TeV", 1200,16.,24.); h06->GetXaxis()->SetTitle("PSD charge"); h06->GetYaxis()->SetTitle("normalized MC events"); h06->SetLineColor(kViolet); h06->SetMarkerColor(kViolet); h06->Sumw2();
+	TH1F *h07=new TH1F("h07", "3.2 TeV < E_{BGO} < 5.6 TeV", 1000,16.,24.); h07->GetXaxis()->SetTitle("PSD charge"); h07->GetYaxis()->SetTitle("normalized MC events"); h07->SetLineColor(kViolet); h07->SetMarkerColor(kViolet); h07->Sumw2();
+	TH1F *h08=new TH1F("h08", "5.6 TeV < E_{BGO} < 10.0 TeV",1000,16.,24.); h08->GetXaxis()->SetTitle("PSD charge"); h08->GetYaxis()->SetTitle("normalized MC events"); h08->SetLineColor(kViolet); h08->SetMarkerColor(kViolet); h08->Sumw2();
+	TH1F *h09=new TH1F("h09","10.0 TeV < E_{BGO} < 31.6 TeV",1000,16.,24.); h09->GetXaxis()->SetTitle("PSD charge"); h09->GetYaxis()->SetTitle("normalized MC events"); h09->SetLineColor(kViolet); h09->SetMarkerColor(kViolet); h09->Sumw2();
+	TH1F *h10=new TH1F("h10","31.6 TeV < E_{BGO} < 100.0 TeV",500,16.,24.);h10->GetXaxis()->SetTitle("PSD charge"); h10->GetYaxis()->SetTitle("normalized MC events"); h10->SetLineColor(kViolet); h10->SetMarkerColor(kViolet); h10->Sumw2();
+	//1.5,27.5 for background 
+	// -------------------------------------------------------------- 	HERE, THE MAGIC! (FILLING HISTOGRAMS)
+	TCanvas *c0=new TCanvas("c0","PSD",1400,800); c0->Divide(5,2);
+	c0_1->cd();  c0_1->SetTicks();  c0_1->SetLogy();  c0_2->cd();  c0_2->SetTicks();  c0_2->SetLogy();
+	c0_3->cd();  c0_3->SetTicks();  c0_3->SetLogy();  c0_4->cd();  c0_4->SetTicks();  c0_4->SetLogy();
+	c0_5->cd();  c0_5->SetTicks();  c0_5->SetLogy();  c0_6->cd();  c0_6->SetTicks();  c0_6->SetLogy();
+	c0_7->cd();  c0_7->SetTicks();  c0_7->SetLogy();  c0_8->cd();  c0_8->SetTicks();  c0_8->SetLogy();
+	c0_9->cd();  c0_9->SetTicks();  c0_9->SetLogy();  c0_10->cd(); c0_10->SetTicks(); c0_10->SetLogy();
+	
+	// -------------- h01
+	c0_1->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h01",ctot*wCaN[i]*bgo01,"");} cout<<"... h01 ..."<<endl;
+	// -------------- h02
+	c0_2->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h02",ctot*wCaN[i]*bgo02,"");} cout<<"... h02 ..."<<endl;
+	// -------------- h03
+	c0_3->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h03",ctot*wCaN[i]*bgo03,"");} cout<<"... h03 ..."<<endl;
+	// -------------- h04
+	c0_4->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h04",ctot*wCaN[i]*bgo04,"");} cout<<"... h04 ..."<<endl;
+	// -------------- h05
+	c0_5->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h05",ctot*wCaN[i]*bgo05,"");} cout<<"... h05 ..."<<endl;
+	// -------------- h06
+	c0_6->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h06",ctot*wCaN[i]*bgo06,"");} cout<<"... h06 ..."<<endl;
+	// -------------- h07
+	c0_7->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h07",ctot*wCaN[i]*bgo07,"");} cout<<"... h07 ..."<<endl;
+	// -------------- h08
+	c0_8->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h08",ctot*wCaN[i]*bgo08,"");} cout<<"... h08 ..."<<endl;
+	// -------------- h09
+	c0_9->cd(); for(int i=0; i<NUM_SET; i++){  skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h09",ctot*wCaN[i]*bgo09,"");} cout<<"... h09 ..."<<endl;
+	// -------------- h10
+	c0_10->cd(); for(int i=0; i<NUM_SET; i++){ skim[i]->Draw("(("+PSDcharge+"-"+MPV_MC+")*("+sigma_DATA+"/"+sigma_MC+")+"+MPV_DATA+")>>+h10",ctot*wCaN[i]*bgo10,"");} cout<<"... h10 ..."<<endl;
+	
+	// -------------------------------------------------------------- 	SAVE ON A FILE...
+	TFile *f = TFile::Open("out_root/MC_FTFP_CALCIUM_SATcorr_STKcut1200_PSDcutXY_CORRECTED_100GeV-100TeV_v2.root", "RECREATE");
+	f->cd();
+	h01->Write(); // save the histogram
+	h02->Write(); // save the histogram
+	h03->Write(); // save the histogram
+	h04->Write(); // save the histogram
+	h05->Write(); // save the histogram
+	h06->Write(); // save the histogram
+	h07->Write(); // save the histogram
+	h08->Write(); // save the histogram
+	h09->Write(); // save the histogram
+	h10->Write(); // save the histogram
+
+	c0->Write();
+	f->ls();      // show the contents of the ROOT file
+	delete f;     // close the ROOT file
+
+}

@@ -1,0 +1,168 @@
+
+// h2Ntrig_cut00, h2Ntrig_cut01, h2Ntrig_cut05, h2Ntrig_cut06, h2Ntrig_stk  , h2Ntrig_psd  , h2Ntrig_charge, h2Ntrig_wgt  
+
+
+// Iterative Bayesian unfolding
+void iterative_bayesian(const Matrix& kernel, const std::vector<double>& eff, const std::vector<double>& obs, 
+                       const std::vector<double>& obserr, Matrix& invkernel,
+                       std::vector<double>& truth, std::vector<double>& trutherr) {
+
+    std::vector<double> obserr2(obserr.size());
+    for(size_t i = 0; i < obserr.size(); i++) {
+        obserr2[i] = obserr[i] * obserr[i];
+    }
+
+    truth = TRUGUESS;
+    std::vector<double> originaltruth = TRUGUESS;
+    std::vector<double> truthprevious;
+
+    for(int attempt = 0; attempt < NATTEMPTS; attempt++) {
+        std::vector<double> smoothtru_prob = smooth_(truth, originaltruth);
+        double Ntrue{0.};
+        for(std::vector<double>::iterator it = smoothtru_prob.begin(); it != smoothtru_prob.end(); ++it){
+            Ntrue += *it;
+        }
+        for(size_t i = 0; i < smoothtru_prob.size(); i++){
+            smoothtru_prob[i] /= Ntrue;
+        }
+
+        for(int i = 0; i < kernel.rows; i++) {
+            double norm = 0.0;
+            for(int j = 0; j < kernel.cols; j++) {
+                invkernel.data[i][j] = smoothtru_prob[j] * kernel.data[i][j];
+                norm += kernel.data[i][j] * smoothtru_prob[j];
+            }
+
+            if(norm > 0.0) {
+                for(int j = 0; j < kernel.cols; j++) {
+                    invkernel.data[i][j] /= norm;
+                    if(eff[j] > 0.0 ) {
+                        invkernel.data[i][j] /= eff[j];
+                    } else{ invkernel.data[i][j] = 0.; }
+                }
+            } else if (norm < 0.0){
+                for(int j = 0; j < kernel.cols; j++) {
+                    invkernel.data[i][j] = 0.;
+                }
+            }
+        }
+
+        Matrix invkernel_t = invkernel.transpose();
+        truth = invkernel_t.dot(obs);
+        std::vector<double> trutherr2 = invkernel_t.dot(obserr2);
+
+        trutherr.resize(truth.size());
+
+        for(size_t i = 0; i < truth.size(); i++) {
+            trutherr[i] = std::sqrt(trutherr2[i]);
+        }
+
+        //Test statistic stopping criterion
+        if(!truthprevious.empty()) {
+            double ts{0.0};
+            if (Test_Stat == "ks"){
+                ts = compute_ks(truth, truthprevious);
+            } else {
+                ts = compute_chi2(truth, truthprevious);
+            }
+            std::cout << attempt << ") "<<Test_Stat<<" = " << ts << std::endl;
+            if(ts < MIN_TS){
+                attempt=NATTEMPTS;
+                std::cout<< "Converged at iteration "<<attempt<< ": "<<Test_Stat<<" (" << ts <<") < " << MIN_TS << std::endl; 
+            }
+        }
+
+        truthprevious = truth;
+    }
+    for(int i = 0; i < kernel.rows; i++) {
+        for(int j = 0; j < kernel.cols; j++) {
+            invkernel.data[i][j] *= eff[j];
+        }
+    }
+}
+
+
+
+
+// Iterative Bayesian unfolding
+void iterative_bayesian(const Matrix& kernel, const std::vector<double>& eff, const std::vector<double>& obs, 
+                       const std::vector<double>& obserr, Matrix& invkernel,
+                       std::vector<double>& truth, std::vector<double>& trutherr) {
+
+    std::vector<double> obserr2(obserr.size());
+    for(size_t i = 0; i < obserr.size(); i++) {
+        obserr2[i] = obserr[i] * obserr[i];
+    }
+
+    truth = TRUGUESS;
+    std::vector<double> originaltruth = TRUGUESS;
+    std::vector<double> truthprevious;
+
+    for(int attempt = 0; attempt < NATTEMPTS; attempt++) {
+        std::vector<double> smoothtru_prob;
+        if (SMOOTHING)
+            smoothtru_prob = smooth_(truth, originaltruth);
+        else
+            smoothtru_prob = truth;//NO SMOOTHING
+        double Ntrue{0.};
+        for(std::vector<double>::iterator it = smoothtru_prob.begin(); it != smoothtru_prob.end(); ++it){
+            Ntrue += *it;
+        }
+        for(size_t i = 0; i < smoothtru_prob.size(); i++){
+            smoothtru_prob[i] /= Ntrue;
+        }
+
+        for(int i = 0; i < kernel.rows; i++) {
+            double norm = 0.0;
+            for(int j = 0; j < kernel.cols; j++) {
+                invkernel.data[i][j] = smoothtru_prob[j] * kernel.data[i][j];
+                norm += kernel.data[i][j] * smoothtru_prob[j];
+            }
+
+            if(norm > 0.0) {
+                for(int j = 0; j < kernel.cols; j++) {
+                    invkernel.data[i][j] /= norm;
+                    if(eff[j] > 0.0 ) {
+                        invkernel.data[i][j] /= eff[j];
+                    } else{ invkernel.data[i][j] = 0.; }
+                }
+            } else if (norm < 0.0){
+                for(int j = 0; j < kernel.cols; j++) {
+                    invkernel.data[i][j] = 0.;
+                }
+            }
+        }
+
+        Matrix invkernel_t = invkernel.transpose();
+        truth = invkernel_t.dot(obs);
+        std::vector<double> trutherr2 = invkernel_t.dot(obserr2);
+
+        trutherr.resize(truth.size());
+
+        for(size_t i = 0; i < truth.size(); i++) {
+            trutherr[i] = std::sqrt(trutherr2[i]);
+        }
+
+        //Test statistic stopping criterion
+        if(!truthprevious.empty()) {
+            double ts{0.0};
+            if (Test_Stat == "ks"){
+                ts = compute_ks(truth, truthprevious);
+            } else {
+                ts = compute_chi2(truth, truthprevious);
+            }
+            std::cout << attempt << ") "<<Test_Stat<<" = " << ts << std::endl;
+            if(ts < MIN_TS){
+                attempt=NATTEMPTS;
+                std::cout<< "Converged at iteration "<<attempt<< ": "<<Test_Stat<<" (" << ts <<") < " << MIN_TS << std::endl; 
+            }
+        }
+
+        truthprevious = truth;
+    }
+    for(int i = 0; i < kernel.rows; i++) {
+        for(int j = 0; j < kernel.cols; j++) {
+            invkernel.data[i][j] *= eff[j];
+        }
+    }
+}
