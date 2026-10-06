@@ -1,0 +1,14 @@
+# NEON
+TString MPV_DATA = "(9.89223+(0.0291812*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(0.0167448*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(-0.00154142*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";
+TString Lsigma_DATA = "(-0.08114+(0.195179*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(-0.0667488*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(0.00777604*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";
+TString Gsigma_DATA = "(0.142156)";
+
+# MAGNESIUM
+TString MPV_DATA = "(11.5476+(0.474231*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(-0.14063*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(0.0168595*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";
+TString Lsigma_DATA = "(0.0242633+(0.102798*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(-0.0392444*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(0.00531128*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";                                            
+TString Gsigma_DATA = "(0.160144)";
+
+# SILICON
+TString MPV_DATA = "(13.1739+(0.849583*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(-0.258937*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(0.028805*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";
+TString Lsigma_DATA = "(0.257966+(-0.117883*log10(BGO_EnergyG_QuenchSatCorrNeMgSi))+(0.0293876*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**2)+(-0.00160831*log10(BGO_EnergyG_QuenchSatCorrNeMgSi)**3))";
+TString Gsigma_DATA = "(0.181834)";
