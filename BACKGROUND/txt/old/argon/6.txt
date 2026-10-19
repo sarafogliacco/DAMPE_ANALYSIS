@@ -1,0 +1,41 @@
+Minuit2Minimizer: Minimize with max-calls 4000 convergence for edm < 1 strategy 1
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = -345780.728523893864
+Edm   = 0.000545507552874010008
+Nfcn  = 189
+mcAr_frac         = 732.611      +/-  33.0637   (limited)
+mcC_frac          = 10224.2      +/-  106.171   (limited)
+mcCa_frac         = 1173.8       +/-  37.7464   (limited)
+mcMg_frac         = 5528.96      +/-  82.2341   (limited)
+mcNe_frac         = 3810.6       +/-  70.1019   (limited)
+mcO_frac          = 15813        +/-  131.164   (limited)
+mcS_frac          = 1560.87      +/-  44.92     (limited)
+mcSi_frac         = 6724.51      +/-  89.125    (limited)
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Contaminazione C nello Argon = 0.000470772 ± 1.99106e-05
+Contaminazione O nello Argon = 0 ± 0
+Contaminazione Ne nello Argon = 0.00147184 ± 6.62335e-05
+Contaminazione Mg nello Argon = 0.0026203 ± 0.00011443
+Contaminazione Si nello Argon = 0.00329388 ± 0.000142018
+Contaminazione S nello Argon = 0.0284864 ± 0.00147215
+Contaminazione Ca nello Argon = 0.0520545 ± 0.00282896
+Somma contaminazioni = 0.0883976 ± 0.00425499
+
+  RooFitResult: minimized FCN value: -345781, estimated distance to minimum: 0.000545578
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MINIMIZE=0 HESSE=0 
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+             mcAr_frac    7.6276e+03    7.3261e+02 +/-  3.31e+01  <none>
+              mcC_frac    7.8353e+03    1.0224e+04 +/-  1.06e+02  <none>
+             mcCa_frac    7.4309e+03    1.1738e+03 +/-  3.78e+01  <none>
+             mcMg_frac    8.2918e+03    5.5290e+03 +/-  8.22e+01  <none>
+             mcNe_frac    8.2180e+03    3.8106e+03 +/-  7.01e+01  <none>
+              mcO_frac    7.7204e+03    1.5813e+04 +/-  1.31e+02  <none>
+              mcS_frac    8.0070e+03    1.5609e+03 +/-  4.49e+01  <none>
+             mcSi_frac    8.2459e+03    6.7245e+03 +/-  8.91e+01  <none>
+
+status  = 0
+covQual = 3
+EDM     = 0.000545578
